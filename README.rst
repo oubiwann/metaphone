@@ -62,7 +62,7 @@ installed, you can do the following::
 
 If you have Twisted installed, you can do::
 
-  $ trial ./tests
+  $ trial ./metaphone
 
 Example Code
 ------------
