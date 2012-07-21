@@ -72,8 +72,10 @@ a taste::
   >>> doublemetaphone("bajador")
   ("PJTR", "PHTR")
 
-Users
-=====
+In the Wild
+===========
+
+The following developers/projects make use of this library:
 
 * `Matthew Somerville`_ uses it on Theatricalia to do people name matching, and
   it appears to work `quite well`_. The database stores the double metaphones
