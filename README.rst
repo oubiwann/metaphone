@@ -99,7 +99,7 @@ The following developers/projects make use of this library:
 .. _Wikipedia page: http://en.wikipedia.org/wiki/Metaphone#Double_Metaphone
 .. _Soundex: http://en.wikipedia.org/wiki/Soundex
 .. _Andrew Collins' work: http://www.atomodo.com/code/double-metaphone/metaphone.py/view
-.. _Andres Collins: http://www.atomodo.com/
+.. _Andrew Collins: http://www.atomodo.com/
 .. _Matthew Somerville: https://github.com/dracos/
 .. _Duncan McGreggor: https://github.com/oubiwann/
 .. _quite well: http://theatricalia.com/search?q=chuck+iwugee
