@@ -36,7 +36,7 @@ predecessor; for example, it tests for approximately 100 different contexts of
 the use of the letter C alone.
 
 The Implementation
-==================
+------------------
 This is a copy of the Python Double Metaphone algorithm, taken from `Andrew
 Collins' work`_, a Python implementation of an algorithm in C originally
 created by Lawrence Philips. Since then, improvements have been made by several
