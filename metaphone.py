@@ -516,3 +516,7 @@ def doublemetaphone(st):
         return (pri, '')
     else:
         return (pri, sec)
+
+
+# for backwards compatibility
+dm = doublemetaphone
