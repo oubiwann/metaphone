@@ -42,6 +42,36 @@ Collins' work`_, a Python implementation of an algorithm in C originally
 created by Lawrence Philips. Since then, improvements have been made by several
 contributors.
 
+Usage
+=====
+
+Running the Unit Tests
+----------------------
+``double-metaphone`` uses the ``unittest`` package from the standard library,
+and as such, its tests are runable by most test runners. If you have nose
+installed, you can do the following::
+
+  $ git checkout https://github.com/oubiwann/double-metaphone.git
+  $ cd double-metaphone
+  $ nosetests -v .
+
+If you have Twisted installed, you can do::
+
+  $ trial ./tests
+
+Example Code
+------------
+
+The unit tests are full of examples, so be sure to check those out. But here's
+a taste::
+
+  $ python
+  >>> from metaphone import doublemetaphone
+  >>> doublemetaphone("architect")
+  ("ARKTKT", "")
+  >>> doublemetaphone("bajador")
+  ("PJTR", "PHTR")
+
 Users
 =====
 
