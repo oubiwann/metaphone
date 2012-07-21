@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-from metaphone import doublemetaphone
+from metaphone.metaphone import doublemetaphone
 
 
 class MetaphoneTestCase(unittest.TestCase):
@@ -14,6 +14,74 @@ class MetaphoneTestCase(unittest.TestCase):
     def test_doubleResult(self):
         result = doublemetaphone(u"richard")
         self.assertEquals(result, ('RXRT', 'RKRT'))
+
+    def test_generalWordList(self):
+        result = doublemetaphone('Jose')
+        self.assertEquals(result, ('JS', 'HS'))
+        result = doublemetaphone('cambrillo')
+        self.assertEquals(result, ('KMPRL', 'KMPR'))
+        result = doublemetaphone('otto')
+        self.assertEquals(result, ('AT', ''))
+        result = doublemetaphone('aubrey')
+        self.assertEquals(result, ('APR', ''))
+        result = doublemetaphone('maurice')
+        self.assertEquals(result, ('MRS', ''))
+        result = doublemetaphone('auto')
+        self.assertEquals(result, ('AT', ''))
+        result = doublemetaphone('maisey')
+        self.assertEquals(result, ('MS', ''))
+        result = doublemetaphone('catherine')
+        self.assertEquals(result, ('K0RN', 'KTRN'))
+        result = doublemetaphone('geoff')
+        self.assertEquals(result, ('JF', 'KF'))
+        result = doublemetaphone('Chile')
+        self.assertEquals(result, ('XL', ''))
+        result = doublemetaphone('katherine')
+        self.assertEquals(result, ('K0RN', 'KTRN'))
+        result = doublemetaphone('steven')
+        self.assertEquals(result, ('STFN', ''))
+        result = doublemetaphone('zhang')
+        self.assertEquals(result, ('JNK', ''))
+        result = doublemetaphone('bob')
+        self.assertEquals(result, ('PP', ''))
+        result = doublemetaphone('ray')
+        self.assertEquals(result, ('R', ''))
+        result = doublemetaphone('Tux')
+        self.assertEquals(result, ('TKS', ''))
+        result = doublemetaphone('bryan')
+        self.assertEquals(result, ('PRN', ''))
+        result = doublemetaphone('bryce')
+        self.assertEquals(result, ('PRS', ''))
+        result = doublemetaphone('Rapelje')
+        self.assertEquals(result, ('RPL', ''))
+        result = doublemetaphone('richard')
+        self.assertEquals(result, ('RXRT', 'RKRT'))
+        result = doublemetaphone('solilijs')
+        self.assertEquals(result, ('SLLS', ''))
+        result = doublemetaphone('Dallas')
+        self.assertEquals(result, ('TLS', ''))
+        result = doublemetaphone('Schwein')
+        self.assertEquals(result, ('XN', 'XFN'))
+        result = doublemetaphone('dave')
+        self.assertEquals(result, ('TF', ''))
+        result = doublemetaphone('eric')
+        self.assertEquals(result, ('ARK', ''))
+        result = doublemetaphone('Parachute')
+        self.assertEquals(result, ('PRKT', ''))
+        result = doublemetaphone('brian')
+        self.assertEquals(result, ('PRN', ''))
+        result = doublemetaphone('randy')
+        self.assertEquals(result, ('RNT', ''))
+        result = doublemetaphone('Through')
+        self.assertEquals(result, ('0R', 'TR'))
+        result = doublemetaphone('Nowhere')
+        self.assertEquals(result, ('NR', ''))
+        result = doublemetaphone('heidi')
+        self.assertEquals(result, ('HT', ''))
+        result = doublemetaphone('Arnow')
+        self.assertEquals(result, ('ARN', 'ARNF'))
+        result = doublemetaphone('Thumbail')
+        self.assertEquals(result, ('0MPL', 'TMPL'))
 
     def test_homophones(self):
         self.assertEqual(
@@ -67,9 +135,11 @@ class MetaphoneTestCase(unittest.TestCase):
         result = doublemetaphone("bajador")
         self.assertEquals(result, ("PJTR", "PHTR"))
         result = doublemetaphone("cabrillo")
-        self.assertEquals(result, ("KPRL", "KPR "))
+        self.assertEquals(result, ("KPRL", "KPR"))
         result = doublemetaphone("gallegos")
-        self.assertEquals(result, ("KLKS", "K KS"))
+        self.assertEquals(result, ("KLKS", "KKS"))
+        result = doublemetaphone("San Jacinto")
+        self.assertEquals(result, ("SNHSNT", ""))
 
     def test_variousFrench(self):
         result = doublemetaphone("rogier")
