@@ -5,6 +5,8 @@ Double Metaphone
 About
 =====
 
+Metaphone
+---------
 As described on the `Wikipedia page`_, the original Metaphone algorithm was
 published in 1990 as an improvement over the `Soundex`_ algorithm. Like
 Soundex, it was limited to English-only use. The Metaphone algorithm does not
@@ -13,6 +15,8 @@ is an intentionally approximate phonetic representation. The approximate
 encoding is necessary to account for the way speakers vary their pronunciations
 and misspell or otherwise vary words and names they are trying to spell.
 
+Double Metaphone
+----------------
 The Double Metaphone phonetic encoding algorithm is the second generation of
 the Metaphone algorithm. Its implementation was described in the June 2000
 issue of C/C++ Users Journal. It makes a number of fundamental design
