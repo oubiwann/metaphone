@@ -33,13 +33,23 @@ class WordTestCase(unittest.TestCase):
         word = Word("Bob")
         self.assertFalse(word.is_slavo_germanic)
 
-    def test_first_letter(self):
+    def test_get_first_letter(self):
         word = Word("naïve")
-        self.assertEqual(word.first_letter, "N")
+        self.assertEqual(word.get_letters(), "N")
+        self.assertEqual(word.get_letters(0), "N")
+        self.assertEqual(word.get_letters(0, 1), "N")
 
     def test_first_2_letters(self):
         word = Word("naïve")
-        self.assertEqual(word.first_2_letters, "NA")
+        self.assertEqual(word.get_letters(0, 2), "NA")
+
+    def test_first_3_letters(self):
+        word = Word("naïve")
+        self.assertEqual(word.get_letters(0, 3), "NAI")
+
+    def test_get_4th_letter(self):
+        word = Word("naïve")
+        self.assertEqual(word.get_letters(3), "V")
 
 
 class MetaphoneTestCase(unittest.TestCase):

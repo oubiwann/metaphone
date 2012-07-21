@@ -58,8 +58,8 @@ class Word(object):
         self.upper = self.normalized.upper()
         self.length = len(self.upper)
         self.prepad = "--"
-        self.first = len(self.prepad)
-        self.last = self.first + self.length - 1
+        self.start_index = len(self.prepad)
+        self.last = self.start_index + self.length - 1
         self.postpad = "------"
         # so we can index beyond the begining and end of the input string
         self.buffer = self.prepad + self.upper + self.postpad
@@ -72,13 +72,12 @@ class Word(object):
             or self.upper.find('CZ') > -1
             or self.upper.find('WITZ') > -1)
 
-    @property
-    def first_letter(self):
-        return self.buffer[self.first]
-
-    @property
-    def first_2_letters(self):
-        return self.buffer[self.first:self.first + 2]
+    def get_letters(self, start=0, end=None):
+        if not end:
+            end = start + 1
+        start = self.start_index + start
+        end = self.start_index + end
+        return self.buffer[start:end]
 
 
 def doublemetaphone(input):
@@ -89,18 +88,18 @@ def doublemetaphone(input):
     """
     word = Word(input)
     input = word.buffer
-    first = word.first
+    first = word.start_index
     last = word.last
 
     # pos is short for position
-    pos = word.first
+    pos = word.start_index
     # primary and secondary metaphone codes
     pri = sec = ''
     # skip these silent letters when at start of word
-    if word.first_2_letters in SILENT_STARTERS:
+    if word.get_letters(0, 2) in SILENT_STARTERS:
         pos += 1
     # Initial 'X' is pronounced 'Z' e.g. 'Xavier'
-    if word.first_letter == 'X':
+    if word.get_letters(0) == 'X':
         # 'Z' maps to 'S'
         pri = sec = 'S'
         pos += 1
@@ -118,7 +117,8 @@ def doublemetaphone(input):
         nxt = (None, 1)
         if ch in VOWELS:
             nxt = (None, 1)
-            if pos == first:  # all init vowels now map to 'A'
+            # all init vowels now map to 'A'
+            if pos == word.start_index: 
                 nxt = ('A', 1)
         elif ch == 'B':
             # "-mb", e.g., "dumb", already skipped over... see 'M' below
