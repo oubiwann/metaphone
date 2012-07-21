@@ -82,6 +82,10 @@ In the Wild
 
 The following developers/projects make use of this library:
 
+* `Andrew Collins`_ used his original code in various music projects and
+  dealing with misspelled text from data provided by various web services. This
+  was then integrated with Plone/Zope projects.
+
 * `Matthew Somerville`_ uses it on Theatricalia to do people name matching, and
   it appears to work `quite well`_. The database stores the double metaphones
   for first and last names, and then upon searching simply computes the double
@@ -94,7 +98,8 @@ The following developers/projects make use of this library:
 .. Links
 .. _Wikipedia page: http://en.wikipedia.org/wiki/Metaphone#Double_Metaphone
 .. _Soundex: http://en.wikipedia.org/wiki/Soundex
-.. _Andrew Collins' work: http://atomboy.isa-geek.com/plone/Members/acoil/programing/double-metaphone/metaphone.py
+.. _Andrew Collins' work: http://www.atomodo.com/code/double-metaphone/metaphone.py/view
+.. _Andres Collins: http://www.atomodo.com/
 .. _Matthew Somerville: https://github.com/dracos/
 .. _Duncan McGreggor: https://github.com/oubiwann/
 .. _quite well: http://theatricalia.com/search?q=chuck+iwugee
