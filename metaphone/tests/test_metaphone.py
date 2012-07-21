@@ -35,7 +35,7 @@ class MetaphoneTestCase(unittest.TestCase):
 
     def test_nonEnglishUnicode(self):
         result = doublemetaphone("andestādītu")
-        self.assertEquals(result, ('NTSTTT', ''))
+        self.assertEquals(result, ('ANTSTTT', ''))
 
     def test_variousGerman(self):
         result = doublemetaphone("ach")
