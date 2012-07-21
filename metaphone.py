@@ -8,18 +8,6 @@
 # Updated Feb 14, 2007 - Found a typo in the 'gh' section
 # Updated Dec 17, 2007 - Bugs fixed in 'S', 'Z', and 'J' sections. Thanks Chris Leong!
 # Updated 2009-03-05 by Matthew Somerville - Various bug fixes against the reference C++ implementation.
-
-"""
->>> dm(u'aubrey')
-('APR', '')
->>> dm(u'richard')
-('RXRT', 'RKRT')
->>> dm(u'katherine') == dm(u'catherine')
-True
->>> dm(u'Bartoš'), dm(u'Bartosz'), dm(u'Bartosch'), dm(u'Bartos')
-(('PRT', ''), ('PRTS', 'PRTX'), ('PRTX', ''), ('PRTS', ''))
-"""
-
 import unicodedata
 
 
@@ -434,7 +422,3 @@ def dm(st):
         return (pri, '')
     else:
         return (pri, sec)
-
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
