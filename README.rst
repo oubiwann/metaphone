@@ -4,7 +4,7 @@ Double Metaphone
 
 .. contents::
    :depth: 2
-   :backlinks: entry
+   :backlinks: top
    :local:
 
 About
