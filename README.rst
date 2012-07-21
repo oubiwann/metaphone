@@ -2,6 +2,8 @@
 Double Metaphone
 ~~~~~~~~~~~~~~~~
 
+.. contents::
+
 About
 =====
 
