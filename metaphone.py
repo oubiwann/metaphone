@@ -30,7 +30,7 @@ the use of the letter C alone.
 # Lawrence Philips it was translated to Python from the C source written by
 # Kevin Atkinson (http://aspell.net/metaphone/) By Andrew Collins - January 12,
 # 2007 who claims no rights to this work
-# http://atomboy.isa-geek.com/plone/Members/acoil/programing/double-metaphone
+# http://www.atomodo.com/code/double-metaphone/metaphone.py/view
 # Updated 2007-02-14 - Found a typo in the 'gh' section
 # Updated 2007-12-17 - Bugs fixed in 'S', 'Z', and 'J' sections (Chris Leong)
 # Updated 2009-03-05 - Various bug fixes against the reference C++
