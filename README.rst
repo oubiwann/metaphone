@@ -40,12 +40,38 @@ origin. Thus it uses a much more complex ruleset for coding than its
 predecessor; for example, it tests for approximately 100 different contexts of
 the use of the letter C alone.
 
-The Implementation
-------------------
+History
+-------
 This is a copy of the Python Double Metaphone algorithm, taken from `Andrew
 Collins' work`_, a Python implementation of an algorithm in C originally
 created by Lawrence Philips. Since then, improvements have been made by several
-contributors.
+contributors, viewable in the git history.
+
+A ``resources`` directory is included with this project which contains the
+following:
+
+* the original C++ file by Lawrence Philips
+
+* Kevin Atkinson's improvements to it
+
+* a C implementation (for use in a Perl extension) by Maurice Aubrey
+
+The contributors of the Python version, originally started by Andrew Collins
+include:
+
+* Andrew Collins
+
+* Chris Leong
+
+* Matthew Somerville
+
+* Richard Barran
+
+* Maximillian Dornseif
+
+* Sebastien Metrot
+
+* Duncan McGreggor
 
 Usage
 =====
