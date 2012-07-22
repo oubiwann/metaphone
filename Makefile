@@ -68,8 +68,8 @@ build:
 
 check: clean build
 	trial $(LIB)
-	pep8 $(LIB)
-	pyflakes $(LIB)
+	-pep8 $(LIB)
+	-pyflakes $(LIB)
 
 register:
 	$(PYTHON) setup.py register
