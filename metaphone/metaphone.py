@@ -614,6 +614,9 @@ class DoubleMetaphone(object):
             character = self.word.buffer[self.position]
             if character in VOWELS:
                 self.process_initial_vowels()
+            elif character == ' ':
+                self.position += 1
+                continue
             elif character == 'B':
                 self.process_b()
             elif character == 'C':
@@ -671,6 +674,8 @@ class DoubleMetaphone(object):
 
 
 def doublemetaphone(input):
+    if input == "Through":
+        import pdb;pdb.set_trace()
     return DoubleMetaphone().parse(input)
 
 
