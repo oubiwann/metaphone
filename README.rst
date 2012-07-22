@@ -1,6 +1,6 @@
-~~~~~~~~~~~~~~~~
-Double Metaphone
-~~~~~~~~~~~~~~~~
+~~~~~~~~~
+Metaphone
+~~~~~~~~~
 
 .. contents::
    :depth: 2
@@ -78,11 +78,11 @@ Usage
 
 Running the Unit Tests
 ----------------------
-``double-metaphone`` uses the ``unittest`` package from the standard library,
-and as such, its tests are runable by most test runners. If you have nose
-installed, you can do the following::
+``metaphone`` uses the ``unittest`` package from the standard library, and as
+such, its tests are runable by most test runners. If you have nose installed,
+you can do the following::
 
-  $ git checkout https://github.com/oubiwann/double-metaphone.git
+  $ git checkout https://github.com/oubiwann/metaphone.git
   $ cd double-metaphone
   $ nosetests -v .
 

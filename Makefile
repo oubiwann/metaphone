@@ -1,5 +1,5 @@
-PROJ := double-metaphone
-LIB := metaphone
+PROJ := metaphone
+LIB := $(PROJ)
 GITHUB_REPO := github.com:oubiwann/$(PROJ).git
 PKG_NAME := $(PROJ)
 TMP_FILE ?= /tmp/MSG
