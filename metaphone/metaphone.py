@@ -655,16 +655,3 @@ def doublemetaphone(input):
 
 # for backwards compatibility for the old name of the function
 dm = doublemetaphone
-
-
-def XXX_doublemetaphone(input):
-    """
-        # will never get here with st.encode('ascii', 'replace') above \xc7 is
-        # UTF-8 encoding of Ç
-        elif character == u'\xc7':
-            next = ('S', 1)
-
-        # UTF-8 encoding of ﾄ
-        elif character == u'\xd1':
-            next = ('N', 1)
-    """
