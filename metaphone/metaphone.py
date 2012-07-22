@@ -37,7 +37,8 @@ the use of the letter C alone.
 # Updated 2009-03-05 - Various bug fixes against the reference C++
 #                      implementation (0.2; Matthew Somerville)
 # XXX changes from 2010 haven't been integrated yet -- version 0.3
-# Updated 2012-07-11 - Fixed long lines, added more docs, changed function name
+# Updated 2012-07    - Fixed long lines, added more docs, changed names,
+#                      reformulated as objects, fixed a bug in 'G'
 #                      (0.4; Duncan McGreggor)
 import unicodedata
 
