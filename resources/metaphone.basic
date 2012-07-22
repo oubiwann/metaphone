@@ -1,0 +1,153 @@
+* BASIC CODE from Computer Language, Dec 1990
+*
+* Author: Lawrence Philips
+*
+SUBROUTINE METAPHONE(NAME, METAPH)
+
+EQU VOWELS TO "AEIOU"
+EQU FRONTV TO "EIY"
+EQU VARSON TO "CSPTG"
+* As in variable sound--those modified by adding an "h"
+NAME = ICONV(NAME, 'MCU')
+ENAME = ICONV(NAME, 'MCA')
+* Delete nonalphanumeric characters and make all caps
+IF ENAME = "" THEN RETURN
+TWO = ENAME[1,2]
+IF TWO = "PN" OR TWO = "AE" OR TWO = "KN" OR TWO = "GN" OR TWO = "WR" THEN ENAME = ENAME[2,9999]
+IF ENAME[1,1] = "X" THEN ENAME = "S":ENAME[2,9999]
+IF TWO = "WH" THEN ENAME = "W":ENAME[3,9999]
+* Convert to metaph
+L = LEN(ENAME)
+METAPH = ''; NEW = 1; HARD = 0
+FOR N = 1 TO L WHILE LEN(METAPH) < 4
+  SYMB = ENAME[N,1]
+  IF SYMB # "C" AND N > 1 AND ENAME[N - 1,1] = SYMB THEN NEW = 0 ELSE NEW = 1
+  IF NEW = 1 THEN
+  BEGIN CASE
+    CASE INDEX(VOWELS,SYMB,1) > 0 AND N = 1
+      METAPH = SYMB
+
+    CASE SYMB = "B"
+      IF N = L AND ENAME[N - 1,1] = "M" THEN SILENT = 1 ELSE SILENT = 0
+      IF NOT(SILENT) THEN METAPH = METAPH:SYMB
+
+    CASE SYMB = "C"
+      IF NOT(N > 1 AND ENAME[N - 1,1] = "S" AND (N + 1) <= L AND INDEX(FRONTV,ENAME[N + 1],1) > 0) THEN
+        IF (N + 2) <= L AND ENAME[N + 1,1] = "I" AND ENAME[N + 2,1] = "A" THEN
+           METAPH = METAPH:"X"
+        END ELSE
+          IF N < L AND INDEX(FRONTV,ENAME[N + 1,1],1) > 0 THEN
+             METAPH = METAPH:"S"
+          END ELSE
+            IF N > 1 AND N < L AND ENAME[N + 1,1] = "H" AND ENAME[N - 1,1] = "S" THEN
+               METAPH = METAPH:"K"
+            END ELSE
+              IF N < L AND ENAME[N + 1,1] = "H" THEN
+                IF N = 1 AND (N + 2) <= L AND INDEX(VOWELS,ENAME[N + 2,1],1) = 0 THEN
+                   METAPH = METAPH:"K"
+                END ELSE
+                   METAPH = METAPH:"X"
+                END
+              END ELSE
+                 METAPH = METAPH:"K"
+              END
+            END
+          END
+        END
+      END
+
+    CASE SYMB = "D"
+      IF (N + 2) <= L AND ENAME[N + 1,1] = "G" AND INDEX(FRONTV,ENAME[N + 2,1],1) > 0 THEN
+        METAPH = METAPH:"J"
+      END ELSE
+        METAPH = METAPH:"T"
+      END
+
+    CASE SYMB = "G"
+      IF N < L AND ENAME[N + 1,1] = "H" AND INDEX(VOWELS,ENAME[N + 2,1],1) = 0 THEN SILENT = 1 ELSE SILENT = 0
+      IF N > 1 AND ((N + 1) = L OR (ENAME[N + 1,1] = "N" AND ENAME[N + 2,1] = "E" AND ENAME[N + 3,1] = "D" AND (N + 3) = L)) AND ENAM
+
+      IF N > 1 AND (N + 1) <= L AND ENAME[N - 1,1] = "D" AND INDEX(FRONTV,ENAME[N + 1,1],1) > 0 THEN SILENT = 1
+      IF N > 1 AND ENAME[N - 1,1] = "G" THEN HARD = 1 ELSE HARD = 0
+      IF NOT(SILENT) THEN
+        IF N < L AND INDEX(FRONTV,ENAME[N + 1,1],1) > 0 AND NOT(HARD) THEN
+          METAPH = METAPH:"J"
+        END ELSE
+          METAPH = METAPH:"K"
+        END
+      END
+
+    CASE SYMB = "H"
+      IF NOT(N = L OR (N > 1 AND INDEX(VARSON,ENAME[N - 1,1],1) > 0)) THEN
+        IF INDEX(VOWELS,ENAME[N + 1,1],1) > 0 THEN
+          METAPH = METAPH:"H"
+        END
+      END
+
+    CASE SYMB = "F" OR SYMB = "J" OR SYMB = "L" OR SYMB = "M" OR SYMB = "N" OR SYMB = "R"
+       METAPH = METAPH:SYMB
+
+    CASE SYMB = "K"
+      IF N > 1 AND ENAME[N - 1,1] # "C" THEN
+        METAPH = METAPH:"K"
+      END ELSE
+        IF N = 1 THEN
+          METAPH = "K"
+        END
+      END
+
+    CASE SYMB = "P"
+      IF N < L AND ENAME[N + 1,1] = "H" THEN
+        METAPH = METAPH:"F"
+      END ELSE
+        METAPH = METAPH:"P"
+      END
+
+    CASE SYMB = "Q"
+      METAPH = METAPH:"K"
+
+    CASE SYMB = "S"
+      IF N > 1 AND (N + 2) <= L AND ENAME[N + 1,1] = "I" AND (ENAME[N + 2,1] = "O" OR ENAME[N + 2,1] = "A" ) THEN
+        METAPH = METAPH:"X"
+      END ELSE
+        IF N < L AND ENAME[N + 1,1] = "H" THEN
+          METAPH = METAPH:"X"
+        END ELSE
+          METAPH = METAPH:"S"
+        END
+      END
+
+    CASE SYMB = "T"
+      IF N > 1 AND (N + 2) <= L AND ENAME[N + 1,1] = "I" AND (ENAME[N + 2,1] = "O" OR ENAME[N + 2,1] = "A" THEN
+        METAPH = METAPH:"X"
+      END ELSE
+        IF N < L AND ENAME[N + 1,1] = "H" THEN
+          IF NOT(N > 1 AND ENAME[N - 1,1] = "T" THEN
+            METAPH = METAPH:"0"
+          END
+        END ELSE
+          IF NOT(ENAME[N + 1,1] = "C" AND ENAME[N + 2,1] = "H") THEN
+            METAPH = METAPH:"T"
+          END
+        END
+      END
+
+    CASE SYMB = "V"
+       METAPH = METAPH:"F"
+
+    CASE SYMB = "W" OR SYMB = "Y"
+       IF N < L AND INDEX(VOWELS, ENAME[N + 1,1],1) > 0 THEN METAPH=METAPH:SYMB
+
+    CASE SYMB = "X"
+        METAPH = METAPH:"KS"
+
+    CASE SYMB = "Z"
+        METAPH = METAPH:"S"
+    END CASE
+  END
+NEXT N
+*
+RETURN
+*
+END
+
