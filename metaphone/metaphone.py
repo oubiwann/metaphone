@@ -104,24 +104,567 @@ class DoubleMetaphone(object):
             self.primary_phone = self.secondary_phone = 'S'
             self.position += 1
 
-    def check_vowels(self):
+    def process_initial_vowels(self):
         # XXX do we need this next set? it should already be done...
         self.next = (None, 1)
         # all init vowels now map to 'A'
         if self.position == self.word.start_index:
             self.next = ('A', 1)
 
+    def process_b(self):
+        # "-mb", e.g., "dumb", already skipped over... see 'M' below
+        if self.word.buffer[self.position + 1] == 'B':
+            self.next = ('P', 2)
+        else:
+            self.next = ('P', 1)
+
+    def process_c(self):
+        buffer = self.word.buffer
+        position = self.position
+        start_index = self.word.start_index
+        # various germanic
+        if (position > start_index + 1
+            and buffer[position - 2] not in VOWELS
+            and buffer[position - 1:self.position + 2] == 'ACH'
+            and buffer[position + 2] not in ['I']
+            and (buffer[position + 2] not in ['E']
+                 or buffer[position - 2:position + 4] in [
+                    'BACHER', 'MACHER'])):
+            self.next = ('K', 2)
+        # special case 'CAESAR'
+        elif (position == start_index
+              and buffer[start_index:start_index + 6] == 'CAESAR'):
+            self.next = ('S', 2)
+        # italian 'chianti'
+        elif buffer[position:position + 4] == 'CHIA':
+            self.next = ('K', 2)
+        elif buffer[position:position + 2] == 'CH':
+            # find 'michael'
+            if (position > start_index
+                and buffer[position:position + 4] == 'CHAE'):
+                self.next = ('K', 'X', 2)
+            elif (position == start_index
+                  and (buffer[position + 1:position + 6] in ['HARAC', 'HARIS']
+                  or buffer[position + 1:position + 4] in ["HOR", "HYM", "HIA",
+                                                           "HEM"])
+                  and buffer[start_index:start_index + 5] != 'CHORE'):
+                self.next = ('K', 2)
+            # germanic, greek, or otherwise 'ch' for 'kh' sound
+            elif (
+                buffer[start_index:start_index + 4] in ['VAN ', 'VON ']
+                or buffer[start_index:start_index + 3] == 'SCH'
+                or buffer[position - 2:position + 4] in ["ORCHES", "ARCHIT",
+                                                         "ORCHID"]
+                or buffer[position + 2] in ['T', 'S']
+                or (
+                    (buffer[position - 1] in ["A", "O", "U", "E"]
+                     or position == start_index)
+                    and (buffer[position + 2] in [
+                        "L", "R", "N", "M", "B", "H", "F", "V", "W"]))):
+                self.next = ('K', 2)
+            else:
+                if position > start_index:
+                    if buffer[start_index:start_index + 2] == 'MC':
+                        self.next = ('K', 2)
+                    else:
+                        self.next = ('X', 'K', 2)
+                else:
+                    self.next = ('X', 2)
+        # e.g, 'czerny'
+        elif (buffer[position:position + 2] == 'CZ'
+              and buffer[position - 2:position + 2] != 'WICZ'):
+            self.next = ('S', 'X', 2)
+        # e.g., 'focaccia'
+        elif buffer[position + 1:position + 4] == 'CIA':
+            self.next = ('X', 3)
+        # double 'C', but not if e.g. 'McClellan'
+        elif (
+            buffer[position:position + 2] == 'CC'
+            and not (position == (start_index + 1)
+                     and buffer[start_index] == 'M')):
+            #'bellocchio' but not 'bacchus'
+            if (buffer[position + 2] in ["I", "E", "H"]
+                and buffer[position + 2:position + 4] != 'HU'):
+                # 'accident', 'accede' 'succeed'
+                if (
+                    (position == (start_index + 1)
+                     and buffer[start_index] == 'A')
+                    or buffer[position - 1:position + 4] in [
+                        'UCCEE', 'UCCES']):
+                    self.next = ('KS', 3)
+                # 'bacci', 'bertucci', other italian
+                else:
+                    self.next = ('X', 3)
+            else:
+                self.next = ('K', 2)
+        elif buffer[position:position + 2] in ["CK", "CG", "CQ"]:
+            self.next = ('K', 2)
+        elif buffer[position:position + 2] in ["CI", "CE", "CY"]:
+            # italian vs. english
+            if buffer[position:position + 3] in ["CIO", "CIE", "CIA"]:
+                self.next = ('S', 'X', 2)
+            else:
+                self.next = ('S', 2)
+        else:
+            # name sent in 'mac caffrey', 'mac gregor'
+            if buffer[position + 1:position + 3] in [" C", " Q", " G"]:
+                self.next = ('K', 3)
+            else:
+                if (buffer[position + 1] in ["C", "K", "Q"]
+                    and buffer[position + 1:position + 3] not in ["CE", "CI"]):
+                    self.next = ('K', 2)
+                # default for 'C'
+                else: 
+                    self.next = ('K', 1)
+
+    def process_d(self):
+        if self.word.buffer[self.position:self.position + 2] == 'DG':
+            # e.g. 'edge'
+            if self.word.buffer[self.position + 2] in ['I', 'E', 'Y']: 
+                self.next = ('J', 3)
+            else:
+                self.next = ('TK', 2)
+        elif self.word.buffer[self.position:self.position + 2] in ['DT', 'DD']:
+            self.next = ('T', 2)
+        else:
+            self.next = ('T', 1)
+
+    def process_f(self):
+        if self.word.buffer[self.position + 1] == 'F':
+            self.next = ('F', 2)
+        else:
+            self.next = ('F', 1)
+
+    def process_g(self):
+        buffer = self.word.buffer
+        position = self.position
+        start_index = self.word.start_index
+        if buffer[position + 1] == 'H':
+            if (position > start_index
+                and buffer[position - 1] not in VOWELS):
+                self.next = ('K', 2)
+            elif position < (start_index + 3):
+                # 'ghislane', ghiradelli
+                if position == start_index: 
+                    if buffer[position + 2] == 'I':
+                        self.next = ('J', 2)
+                    else:
+                        self.next = ('K', 2)
+            # Parker's rule (with some further refinements) - e.g., 'hugh'
+            elif (
+                (position > (start_index + 1)
+                 and buffer[position - 2] in ['B', 'H', 'D'])
+                or (position > (start_index + 2)
+                 and buffer[position - 3] in ['B', 'H', 'D'])
+                or (position > (start_index + 3)
+                 and buffer[position - 3] in ['B', 'H'])):
+                self.next = (None, 2)
+            else:
+                # e.g., 'laugh', 'McLaughlin', 'cough', 'gough', 'rough',
+                # 'tough'
+                if (position > (start_index + 2)
+                    and buffer[position - 1] == 'U'
+                    and buffer[position - 3] in [
+                        "C", "G", "L", "R", "T"]):
+                    self.next = ('F', 2)
+                else:
+                    if (position > start_index
+                        and buffer[position - 1] != 'I'):
+                        self.next = ('K', 2)
+        elif buffer[position + 1] == 'N':
+            if (position == (start_index + 1)
+                and buffer[start_index] in VOWELS
+                and not self.word.is_slavo_germanic):
+                self.next = ('KN', 'N', 2)
+            else:
+                # not e.g. 'cagney'
+                if (buffer[position + 2:position + 4] != 'EY'
+                    and buffer[position + 1] != 'Y'
+                    and not self.word.is_slavo_germanic):
+                    self.next = ('N', 'KN', 2)
+                else:
+                    self.next = ('KN', 2)
+        # 'tagliaro'
+        elif (buffer[position + 1:position + 3] == 'LI'
+              and not self.word.is_slavo_germanic):
+            self.next = ('KL', 'L', 2)
+        # -ges-,-gep-,-gel-, -gie- at beginning
+        elif (position == start_index
+              and (buffer[position + 1] == 'Y'
+              or buffer[position + 1:position + 3] in [
+                "ES", "EP", "EB", "EL", "EY", "IB", "IL", "IN", "IE", "EI",
+                "ER"])):
+            self.next = ('K', 'J', 2)
+        # -ger-,  -gy-
+        elif (
+            (buffer[position + 1:position + 3] == 'ER'
+             or buffer[position + 1] == 'Y')
+            and buffer[start_index:start_index + 6] not in [
+                "DANGER", "RANGER", "MANGER"]
+            and buffer[position - 1] not in ['E', 'I']
+            and buffer[position - 1:position + 2] not in ['RGY', 'OGY']):
+            self.next = ('K', 'J', 2)
+        # italian e.g, 'biaggi'
+        elif (
+            buffer[position + 1] in ['E', 'I', 'Y']
+            or buffer[position - 1:position + 3] in [
+                "AGGI", "OGGI"]):
+            # obvious germanic
+            if (buffer[start_index:start_index + 4] in ['VON ', 'VAN ']
+                or buffer[start_index:start_index + 3] == 'SCH'
+                or buffer[position + 1:position + 3] == 'ET'):
+                self.next = ('K', 2)
+            else:
+                # always soft if french ending
+                if buffer[position + 1:position + 5] == 'IER ':
+                    self.next = ('J', 2)
+                else:
+                    self.next = ('J', 'K', 2)
+        elif buffer[position + 1] == 'G':
+            self.next = ('K', 2)
+        else:
+            self.next = ('K', 1)
+
+    def process_h(self):
+        # only keep if self.word.start_index & before vowel or btw. 2 vowels
+        if ((self.position == self.word.start_index
+             or self.word.buffer[self.position - 1] in VOWELS)
+            and self.word.buffer[self.position + 1] in VOWELS):
+            self.next = ('H', 2)
+        # (also takes care of 'HH')
+        else:
+            self.next = (None, 1)
+
+    def process_j(self):
+        buffer = self.word.buffer
+        position = self.position
+        start_index = self.word.start_index
+        # obvious spanish, 'jose', 'san jacinto'
+        if (buffer[self.position:self.position + 4] == 'JOSE'
+            or buffer[start_index:start_index + 4] == 'SAN '):
+            if (
+                (position == start_index and buffer[position + 4] == ' ')
+                or buffer[start_index:start_index + 4] == 'SAN '):
+                self.next = ('H', )
+            else:
+                self.next = ('J', 'H')
+        # Yankelovich/Jankelowicz
+        elif position == start_index and buffer[self.position:self.position + 4] != 'JOSE':
+            self.next = ('J', 'A')
+        else:
+            # spanish pron. of e.g. 'bajador'
+            if (buffer[position - 1] in VOWELS
+                and not self.word.is_slavo_germanic
+                and buffer[position + 1] in ['A', 'O']):
+                self.next = ('J', 'H')
+            else:
+                if position == self.word.end_index:
+                    self.next = ('J', ' ')
+                else:
+                    if (buffer[position + 1] not in ["L", "T", "K", "S", "N",
+                                               "M", "B", "Z"]
+                        and buffer[position - 1] not in ["S", "K", "L"]):
+                        self.next = ('J',)
+                    else:
+                        self.next = (None, )
+        if buffer[position + 1] == 'J':
+            self.next = self.next + (2,)
+        else:
+            self.next = self.next + (1,)
+
+    def process_k(self):
+        if self.word.buffer[self.position + 1] == 'K':
+            self.next = ('K', 2)
+        else:
+            self.next = ('K', 1)
+
+    def process_l(self):
+        buffer = self.word.buffer
+        position = self.position
+        end_index = self.word.end_index
+        if buffer[position + 1] == 'L':
+            # spanish e.g. 'cabrillo', 'gallegos'
+            if ((position == (end_index - 2)
+                 and buffer[position - 1:position + 3] in [
+                    "ILLO", "ILLA", "ALLE"])
+                or ((buffer[end_index - 1:end_index + 1] in ["AS", "OS"]
+                     or buffer[end_index] in ["A", "O"])
+                    and buffer[position - 1:position + 3] == 'ALLE')):
+                self.next = ('L', '', 2)
+            else:
+                self.next = ('L', 2)
+        else:
+            self.next = ('L', 1)
+
+    def process_m(self):
+        buffer = self.word.buffer
+        position = self.position
+        if ((buffer[position + 1:position + 4] == 'UMB'
+             and (position + 1 == self.word.end_index
+                  or buffer[position + 2:position + 4] == 'ER'))
+            or buffer[position + 1] == 'M'):
+            self.next = ('M', 2)
+        else:
+            self.next = ('M', 1)
+
+    def process_n(self):
+        if self.word.buffer[self.position + 1] == 'N':
+            self.next = ('N', 2)
+        else:
+            self.next = ('N', 1)
+
+    def process_p(self):
+        if self.word.buffer[self.position + 1] == 'H':
+            self.next = ('F', 2)
+        # also account for "campbell", "raspberry"
+        elif self.word.buffer[self.position + 1] in ['P', 'B']:
+            self.next = ('P', 2)
+        else:
+            self.next = ('P', 1)
+
+    def process_q(self):
+        if self.word.buffer[self.position + 1] == 'Q':
+            self.next = ('K', 2)
+        else:
+            self.next = ('K', 1)
+
+    def process_r(self):
+        buffer = self.word.buffer
+        position = self.position
+        end_index = self.word.end_index
+        # french e.g. 'rogier', but exclude 'hochmeier'
+        if (position == end_index
+            and not self.word.is_slavo_germanic
+            and buffer[position - 2:position] == 'IE'
+            and buffer[position - 4:position - 2] not in ['ME', 'MA']):
+            self.next = ('', 'R')
+        else:
+            self.next = ('R',)
+        if buffer[position + 1] == 'R':
+            self.next = self.next + (2,)
+        else:
+            self.next = self.next + (1,)
+
+    def process_s(self):
+        buffer = self.word.buffer
+        position = self.position
+        start_index = self.word.start_index
+        end_index = self.word.end_index
+        # special cases 'island', 'isle', 'carlisle', 'carlysle'
+        if buffer[position - 1:position + 2] in ['ISL', 'YSL']:
+            self.next = (None, 1)
+        # special case 'sugar-'
+        elif (position == start_index
+              and buffer[start_index:start_index + 5] == 'SUGAR'):
+            self.next = ('X', 'S', 1)
+        elif buffer[position:position + 2] == 'SH':
+            # germanic
+            if buffer[position + 1:position + 5] in [
+                "HEIM", "HOEK", "HOLM", "HOLZ"]:
+                self.next = ('S', 2)
+            else:
+                self.next = ('X', 2)
+        # italian & armenian
+        elif (buffer[position:position + 3] in ["SIO", "SIA"]
+              or buffer[position:position + 4] == 'SIAN'):
+            if not self.word.is_slavo_germanic:
+                self.next = ('S', 'X', 3)
+            else:
+                self.next = ('S', 3)
+        # german & anglicisations, e.g. 'smith' match 'schmidt', 'snider'
+        # match 'schneider' also, -sz- in slavic language altho in
+        # hungarian it is pronounced 's'
+        elif ((position == start_index
+               and buffer[position + 1] in ["M", "N", "L", "W"])
+              or buffer[position + 1] == 'Z'):
+            self.next = ('S', 'X')
+            if buffer[position + 1] == 'Z':
+                self.next = self.next + (2,)
+            else:
+                self.next = self.next + (1,)
+        elif buffer[position:position + 2] == 'SC':
+            # Schlesinger's rule
+            if buffer[position + 2] == 'H':
+                # dutch origin, e.g. 'school', 'schooner'
+                if buffer[position + 3:position + 5] in [
+                    "OO", "ER", "EN", "UY", "ED", "EM"]:
+                    # 'schermerhorn', 'schenker'
+                    if buffer[position + 3:position + 5] in ['ER', 'EN']:
+                        self.next = ('X', 'SK', 3)
+                    else:
+                        self.next = ('SK', 3)
+                else:
+                    if (position == start_index
+                        and buffer[start_index + 3] not in VOWELS
+                        and buffer[start_index + 3] != 'W'):
+                        self.next = ('X', 'S', 3)
+                    else:
+                        self.next = ('X', 3)
+            elif buffer[position + 2] in ['I', 'E', 'Y']:
+                self.next = ('S', 3)
+            else:
+                self.next = ('SK', 3)
+        # french e.g. 'resnais', 'artois'
+        elif (position == end_index
+              and buffer[position - 2:position] in ['AI', 'OI']):
+            self.next = ('', 'S', 1)
+        else:
+            self.next = ('S', )
+            if buffer[position + 1] in ['S', 'Z']:
+                self.next = self.next + (2,)
+            else:
+                self.next = self.next + (1,)
+
+    def process_t(self):
+        buffer = self.word.buffer
+        position = self.position
+        start_index = self.word.start_index
+        if buffer[position:position + 4] == 'TION':
+            self.next = ('X', 3)
+        elif buffer[position:position + 3] in ['TIA', 'TCH']:
+            self.next = ('X', 3)
+        elif (buffer[position:position + 2] == 'TH'
+              or buffer[position:position + 3] == 'TTH'):
+            # special case 'thomas', 'thames' or germanic
+            if (buffer[position + 2:position + 4] in ['OM', 'AM']
+                or buffer[start_index:start_index + 4] in ['VON ', 'VAN ']
+                or buffer[start_index:start_index + 3] == 'SCH'):
+                self.next = ('T', 2)
+            else:
+                self.next = ('0', 'T', 2)
+        elif buffer[position + 1] in ['T', 'D']:
+            self.next = ('T', 2)
+        else:
+            self.next = ('T', 1)
+
+    def process_v(self):
+        if self.word.buffer[self.position + 1] == 'V':
+            self.next = ('F', 2)
+        else:
+            self.next = ('F', 1)
+
+    def process_w(self):
+        buffer = self.word.buffer
+        position = self.position
+        start_index = self.word.start_index
+        # can also be in middle of word
+        if buffer[position:position + 2] == 'WR':
+            self.next = ('R', 2)
+        elif (position == start_index
+            and (buffer[position + 1] in VOWELS
+                 or buffer[position:position + 2] == 'WH')):
+            # Wasserman should match Vasserman
+            if buffer[position + 1] in VOWELS:
+                self.next = ('A', 'F', 1)
+            else:
+                self.next = ('A', 1)
+        # Arnow should match Arnoff
+        elif ((position == self.word.end_index
+               and buffer[position - 1] in VOWELS)
+              or buffer[position - 1:position + 4] in [
+                "EWSKI", "EWSKY", "OWSKI", "OWSKY"]
+              or buffer[start_index:start_index + 3] == 'SCH'):
+            self.next = ('', 'F', 1)
+        # polish e.g. 'filipowicz'
+        elif buffer[position:position + 4] in ["WICZ", "WITZ"]:
+            self.next = ('TS', 'FX', 4)
+        else:  # default is to skip it
+            self.next = (None, 1)
+
+    def process_x(self):
+        buffer = self.word.buffer
+        position = self.position
+        # french e.g. breaux
+        self.next = (None, )
+        if not (
+            position == self.word.end_index
+            and (buffer[position - 3:position] in ["IAU", "EAU"]
+                 or buffer[position - 2:position] in ['AU', 'OU'])):
+            self.next = ('KS',)
+        if buffer[position + 1] in ['C', 'X']:
+            self.next = self.next + (2,)
+        else:
+            self.next = self.next + (1,)
+
+    def process_z(self):
+        # chinese pinyin e.g. 'zhao'
+        if self.word.buffer[self.position + 1] == 'H':
+            self.next = ('J', )
+        elif (
+            self.word.buffer[self.position + 1:self.position + 3] in [
+                "ZO", "ZI", "ZA"]
+            or (self.word.is_slavo_germanic
+                and self.position > self.word.start_index
+                and self.word.buffer[self.position - 1] != 'T')):
+            self.next = ('S', 'TS')
+        else:
+            self.next = ('S', )
+        if (self.word.buffer[self.position + 1] == 'Z'
+            or self.word.buffer[self.position + 1] == 'H'):
+            self.next = self.next + (2,)
+        else:
+            self.next = self.next + (1,)
+
     def parse(self, input):
         self.word = Word(input)
         self.position = self.word.start_index
         self.check_word_start()
-
         # main loop through chars in word.buffer
         while self.position <= self.word.end_index:
             character = self.word.buffer[self.position]
             if character in VOWELS:
-                self.check_vowels()
-
+                self.process_initial_vowels()
+            elif character == 'B':
+                self.process_b()
+            elif character == 'C':
+                self.process_c()
+            elif character == 'D':
+                self.process_d()
+            elif character == 'F':
+                self.process_f()
+            elif character == 'G':
+                self.process_g()
+            elif character == 'H':
+                self.process_h()
+            elif character == 'J':
+                self.process_j()
+            elif character == 'K':
+                self.process_k()
+            elif character == 'L':
+                self.process_l()
+            elif character == 'M':
+                self.process_m()
+            elif character == 'N':
+                self.process_n()
+            elif character == 'P':
+                self.process_p()
+            elif character == 'Q':
+                self.process_q()
+            elif character == 'R':
+                self.process_r()
+            elif character == 'S':
+                self.process_s()
+            elif character == 'T':
+                self.process_t()
+            elif character == 'V':
+                self.process_v()
+            elif character == 'W':
+                self.process_w()
+            elif character == 'X':
+                self.process_x()
+            elif character == 'Z':
+                self.process_z()
+            if len(self.next) == 2:
+                if self.next[0]:
+                    self.primary_phone += self.next[0]
+                    self.secondary_phone += self.next[0]
+                self.position += self.next[1]
+            elif len(self.next) == 3:
+                if self.next[0]:
+                    self.primary_phone += self.next[0]
+                if self.next[1]:
+                    self.secondary_phone += self.next[1]
+                self.position += self.next[2]
         if self.primary_phone == self.secondary_phone:
             self.secondary_phone = ""
         return (self.primary_phone, self.secondary_phone)
@@ -137,444 +680,16 @@ def XXX_doublemetaphone(input):
     for given string - always a tuple there are no checks done on the input
     string, but it should be a single word or name.
     """
-
-
-        elif character == 'B':
-            # "-mb", e.g., "dumb", already skipped over... see 'M' below
-            if word.buffer[pos + 1] == 'B':
-                next = ('P', 2)
-            else: next = ('P', 1)
-        elif character == 'C':
-            # various germanic
-            if (pos > word.start_index + 1
-                and word.buffer[pos - 2] not in VOWELS
-                and word.buffer[pos - 1:pos + 2] == 'ACH'
-                and word.buffer[pos + 2] not in ['I']
-                and (word.buffer[pos + 2] not in ['E']
-                     or word.buffer[pos - 2:pos + 4] in ['BACHER', 'MACHER'])):
-                next = ('K', 2)
-            # special case 'CAESAR'
-            elif pos == word.start_index and word.buffer[word.start_index:word.start_index + 6] == 'CAESAR':
-                next = ('S', 2)
-            # italian 'chianti'
-            elif word.buffer[pos:pos + 4] == 'CHIA':
-                next = ('K', 2)
-            elif word.buffer[pos:pos + 2] == 'CH':
-                # find 'michael'
-                if pos > word.start_index and word.buffer[pos:pos + 4] == 'CHAE':
-                    next = ('K', 'X', 2)
-                elif (pos == word.start_index
-                      and (word.buffer[pos + 1:pos + 6] in ['HARAC', 'HARIS']
-                      or word.buffer[pos + 1:pos + 4] in ["HOR", "HYM", "HIA",
-                                                    "HEM"])
-                      and word.buffer[word.start_index:word.start_index + 5] != 'CHORE'):
-                    next = ('K', 2)
-                # germanic, greek, or otherwise 'ch' for 'kh' sound
-                elif (
-                    word.buffer[word.start_index:word.start_index + 4] in ['VAN ', 'VON ']
-                    or word.buffer[word.start_index:word.start_index + 3] == 'SCH'
-                    or word.buffer[pos - 2:pos + 4] in ["ORCHES", "ARCHIT", "ORCHID"]
-                    or word.buffer[pos + 2] in ['T', 'S']
-                    or (
-                        (word.buffer[pos - 1] in ["A", "O", "U", "E"]
-                         or pos == word.start_index)
-                        and (word.buffer[pos + 2] in [
-                            "L", "R", "N", "M", "B", "H", "F", "V", "W"]))):
-                    next = ('K', 2)
-                else:
-                    if pos > word.start_index:
-                        if word.buffer[word.start_index:word.start_index + 2] == 'MC':
-                            next = ('K', 2)
-                        else:
-                            next = ('X', 'K', 2)
-                    else:
-                        next = ('X', 2)
-            # e.g, 'czerny'
-            elif (word.buffer[pos:pos + 2] == 'CZ'
-                  and word.buffer[pos - 2:pos + 2] != 'WICZ'):
-                next = ('S', 'X', 2)
-            # e.g., 'focaccia'
-            elif word.buffer[pos + 1:pos + 4] == 'CIA':
-                next = ('X', 3)
-            # double 'C', but not if e.g. 'McClellan'
-            elif (
-                word.buffer[pos:pos + 2] == 'CC'
-                and not (pos == (word.start_index + 1) and word.buffer[word.start_index] == 'M')):
-                #'bellocchio' but not 'bacchus'
-                if (word.buffer[pos + 2] in ["I", "E", "H"]
-                    and word.buffer[pos + 2:pos + 4] != 'HU'):
-                    # 'accident', 'accede' 'succeed'
-                    if (
-                        (pos == (word.start_index + 1) and word.buffer[word.start_index] == 'A')
-                        or word.buffer[pos - 1:pos + 4] in ['UCCEE', 'UCCES']):
-                        next = ('KS', 3)
-                    # 'bacci', 'bertucci', other italian
-                    else:
-                        next = ('X', 3)
-                else:
-                    next = ('K', 2)
-            elif word.buffer[pos:pos + 2] in ["CK", "CG", "CQ"]:
-                next = ('K', 2)
-            elif word.buffer[pos:pos + 2] in ["CI", "CE", "CY"]:
-                # italian vs. english
-                if word.buffer[pos:pos + 3] in ["CIO", "CIE", "CIA"]:
-                    next = ('S', 'X', 2)
-                else:
-                    next = ('S', 2)
-            else:
-                # name sent in 'mac caffrey', 'mac gregor'
-                if word.buffer[pos + 1:pos + 3] in [" C", " Q", " G"]:
-                    next = ('K', 3)
-                else:
-                    if (word.buffer[pos + 1] in ["C", "K", "Q"]
-                        and word.buffer[pos + 1:pos + 3] not in ["CE", "CI"]):
-                        next = ('K', 2)
-                    else:  # default for 'C'
-                        next = ('K', 1)
+    """
         # will never get here with st.encode('ascii', 'replace') above \xc7 is
         # UTF-8 encoding of Ç
         elif character == u'\xc7':
             next = ('S', 1)
-        elif character == 'D':
-            if word.buffer[pos:pos + 2] == 'DG':
-                if word.buffer[pos + 2] in ['I', 'E', 'Y']:  # e.g. 'edge'
-                    next = ('J', 3)
-                else:
-                    next = ('TK', 2)
-            elif word.buffer[pos:pos + 2] in ['DT', 'DD']:
-                next = ('T', 2)
-            else:
-                next = ('T', 1)
-        elif character == 'F':
-            if word.buffer[pos + 1] == 'F':
-                next = ('F', 2)
-            else:
-                next = ('F', 1)
-        elif character == 'G':
-            if word.buffer[pos + 1] == 'H':
-                if pos > word.start_index and word.buffer[pos - 1] not in VOWELS:
-                    next = ('K', 2)
-                elif pos < (word.start_index + 3):
-                    if pos == word.start_index:  # 'ghislane', ghiradelli
-                        if word.buffer[pos + 2] == 'I':
-                            next = ('J', 2)
-                        else:
-                            next = ('K', 2)
-                # Parker's rule (with some further refinements) - e.g., 'hugh'
-                elif ((pos > (word.start_index + 1) and word.buffer[pos - 2] in ['B', 'H', 'D'])
-                      or (pos > (word.start_index + 2) and word.buffer[pos - 3] in ['B', 'H', 'D'])
-                      or (pos > (word.start_index + 3) and word.buffer[pos - 3] in ['B', 'H'])):
-                    next = (None, 2)
-                else:
-                    # e.g., 'laugh', 'McLaughlin', 'cough', 'gough', 'rough',
-                    # 'tough'
-                    if (pos > (word.start_index + 2)
-                        and word.buffer[pos - 1] == 'U'
-                        and word.buffer[pos - 3] in ["C", "G", "L", "R", "T"]):
-                        next = ('F', 2)
-                    else:
-                        if pos > word.start_index and word.buffer[pos - 1] != 'I':
-                            next = ('K', 2)
-            elif word.buffer[pos + 1] == 'N':
-                if pos == ((word.start_index + 1)
-                           and word.buffer[word.start_index] in VOWELS
-                           and not word.is_slavo_germanic):
-                    next = ('KN', 'N', 2)
-                else:
-                    # not e.g. 'cagney'
-                    if (word.buffer[pos + 2:pos + 4] != 'EY'
-                        and word.buffer[pos + 1] != 'Y'
-                        and not word.is_slavo_germanic):
-                        next = ('N', 'KN', 2)
-                    else:
-                        next = ('KN', 2)
-            # 'tagliaro'
-            elif word.buffer[pos + 1:pos + 3] == 'LI' and not word.is_slavo_germanic:
-                next = ('KL', 'L', 2)
-            # -ges-,-gep-,-gel-, -gie- at beginning
-            elif (pos == word.start_index
-                  and (word.buffer[pos + 1] == 'Y'
-                  or word.buffer[pos + 1:pos + 3] in ["ES", "EP", "EB", "EL", "EY",
-                                             "IB", "IL", "IN", "IE", "EI",
-                                             "ER"])):
-                next = ('K', 'J', 2)
-            # -ger-,  -gy-
-            elif (
-                (word.buffer[pos + 1:pos + 3] == 'ER' or word.buffer[pos + 1] == 'Y')
-                and word.buffer[word.start_index:word.start_index + 6] not in ["DANGER", "RANGER", "MANGER"]
-                and word.buffer[pos - 1] not in ['E', 'I']
-                and word.buffer[pos - 1:pos + 2] not in ['RGY', 'OGY']):
-                next = ('K', 'J', 2)
-            # italian e.g, 'biaggi'
-            elif (
-                word.buffer[pos + 1] in ['E', 'I', 'Y']
-                or word.buffer[pos - 1:pos + 3] in ["AGGI", "OGGI"]):
-                # obvious germanic
-                if (word.buffer[word.start_index:word.start_index + 4] in ['VON ', 'VAN ']
-                    or word.buffer[word.start_index:word.start_index + 3] == 'SCH'
-                    or word.buffer[pos + 1:pos + 3] == 'ET'):
-                    next = ('K', 2)
-                else:
-                    # always soft if french ending
-                    if word.buffer[pos + 1:pos + 5] == 'IER ':
-                        next = ('J', 2)
-                    else:
-                        next = ('J', 'K', 2)
-            elif word.buffer[pos + 1] == 'G':
-                next = ('K', 2)
-            else:
-                next = ('K', 1)
-        elif character == 'H':
-            # only keep if word.start_index & before vowel or btw. 2 vowels
-            if (
-                (pos == word.start_index or word.buffer[pos - 1] in VOWELS)
-                and word.buffer[pos + 1] in VOWELS):
-                next = ('H', 2)
-            # (also takes care of 'HH')
-            else:
-                next = (None, 1)
-        elif character == 'J':
-            # obvious spanish, 'jose', 'san jacinto'
-            if (
-                word.buffer[pos:pos + 4] == 'JOSE'
-                or word.buffer[word.start_index:word.start_index + 4] == 'SAN '):
-                if (
-                    (pos == word.start_index and word.buffer[pos + 4] == ' ')
-                    or word.buffer[word.start_index:word.start_index + 4] == 'SAN '):
-                    next = ('H', )
-                else:
-                    next = ('J', 'H')
-            # Yankelovich/Jankelowicz
-            elif pos == word.start_index and word.buffer[pos:pos + 4] != 'JOSE':
-                next = ('J', 'A')
-            else:
-                # spanish pron. of e.g. 'bajador'
-                if (word.buffer[pos - 1] in VOWELS
-                    and not word.is_slavo_germanic
-                    and word.buffer[pos + 1] in ['A', 'O']):
-                    next = ('J', 'H')
-                else:
-                    if pos == word.end_index:
-                        next = ('J', ' ')
-                    else:
-                        if (word.buffer[pos + 1] not in ["L", "T", "K", "S", "N",
-                                                   "M", "B", "Z"]
-                            and word.buffer[pos - 1] not in ["S", "K", "L"]):
-                            next = ('J', )
-                        else:
-                            next = (None, )
-            if word.buffer[pos + 1] == 'J':
-                next = next + (2, )
-            else:
-                next = next + (1, )
-        elif character == 'K':
-            if word.buffer[pos + 1] == 'K':
-                next = ('K', 2)
-            else:
-                next = ('K', 1)
-        elif character == 'L':
-            if word.buffer[pos + 1] == 'L':
-                # spanish e.g. 'cabrillo', 'gallegos'
-                if ((pos == (word.end_index - 2)
-                     and word.buffer[pos - 1:pos + 3] in ["ILLO", "ILLA", "ALLE"])
-                    or ((word.buffer[word.end_index - 1:word.end_index + 1] in ["AS", "OS"]
-                         or word.buffer[word.end_index] in ["A", "O"])
-                        and word.buffer[pos - 1:pos + 3] == 'ALLE')):
-                    next = ('L', '', 2)
-                else:
-                    next = ('L', 2)
-            else:
-                next = ('L', 1)
-        elif character == 'M':
-            if (
-                (word.buffer[pos + 1:pos + 4] == 'UMB'
-                 and (pos + 1 == word.end_index or word.buffer[pos + 2:pos + 4] == 'ER'))
-                or word.buffer[pos + 1] == 'M'):
-                next = ('M', 2)
-            else:
-                next = ('M', 1)
-        elif character == 'N':
-            if word.buffer[pos + 1] == 'N':
-                next = ('N', 2)
-            else:
-                next = ('N', 1)
+
         # UTF-8 encoding of ﾄ
         elif character == u'\xd1':
             next = ('N', 1)
-        elif character == 'P':
-            if word.buffer[pos + 1] == 'H':
-                next = ('F', 2)
-            # also account for "campbell", "raspberry"
-            elif word.buffer[pos + 1] in ['P', 'B']:
-                next = ('P', 2)
-            else:
-                next = ('P', 1)
-        elif character == 'Q':
-            if word.buffer[pos + 1] == 'Q':
-                next = ('K', 2)
-            else:
-                next = ('K', 1)
-        elif character == 'R':
-            # french e.g. 'rogier', but exclude 'hochmeier'
-            if (pos == word.end_index
-                and not word.is_slavo_germanic
-                and word.buffer[pos - 2:pos] == 'IE'
-                and word.buffer[pos - 4:pos - 2] not in ['ME', 'MA']):
-                next = ('', 'R')
-            else:
-                next = ('R',)
-            if word.buffer[pos + 1] == 'R':
-                next = next + (2,)
-            else:
-                next = next + (1,)
-        elif character == 'S':
-            # special cases 'island', 'isle', 'carlisle', 'carlysle'
-            if word.buffer[pos - 1:pos + 2] in ['ISL', 'YSL']:
-                next = (None, 1)
-            # special case 'sugar-'
-            elif pos == word.start_index and word.buffer[word.start_index:word.start_index + 5] == 'SUGAR':
-                next = ('X', 'S', 1)
-            elif word.buffer[pos:pos + 2] == 'SH':
-                # germanic
-                if word.buffer[pos + 1:pos + 5] in ["HEIM", "HOEK", "HOLM", "HOLZ"]:
-                    next = ('S', 2)
-                else:
-                    next = ('X', 2)
-            # italian & armenian
-            elif (word.buffer[pos:pos + 3] in ["SIO", "SIA"]
-                  or word.buffer[pos:pos + 4] == 'SIAN'):
-                if not word.is_slavo_germanic:
-                    next = ('S', 'X', 3)
-                else:
-                    next = ('S', 3)
-            # german & anglicisations, e.g. 'smith' match 'schmidt', 'snider'
-            # match 'schneider' also, -sz- in slavic language altho in
-            # hungarian it is pronounced 's'
-            elif (
-                (pos == word.start_index and word.buffer[pos + 1] in ["M", "N", "L", "W"])
-                or word.buffer[pos + 1] == 'Z'):
-                next = ('S', 'X')
-                if word.buffer[pos + 1] == 'Z':
-                    next = next + (2, )
-                else:
-                    next = next + (1, )
-            elif word.buffer[pos:pos + 2] == 'SC':
-                # Schlesinger's rule
-                if word.buffer[pos + 2] == 'H':
-                    # dutch origin, e.g. 'school', 'schooner'
-                    if word.buffer[pos + 3:pos + 5] in ["OO", "ER", "EN", "UY", "ED",
-                                                  "EM"]:
-                        # 'schermerhorn', 'schenker'
-                        if word.buffer[pos + 3:pos + 5] in ['ER', 'EN']:
-                            next = ('X', 'SK', 3)
-                        else:
-                            next = ('SK', 3)
-                    else:
-                        if (pos == word.start_index
-                            and word.buffer[word.start_index + 3] not in VOWELS
-                            and word.buffer[word.start_index + 3] != 'W'):
-                            next = ('X', 'S', 3)
-                        else:
-                            next = ('X', 3)
-                elif word.buffer[pos + 2] in ['I', 'E', 'Y']:
-                    next = ('S', 3)
-                else:
-                    next = ('SK', 3)
-            # french e.g. 'resnais', 'artois'
-            elif pos == word.end_index and word.buffer[pos - 2:pos] in ['AI', 'OI']:
-                next = ('', 'S', 1)
-            else:
-                next = ('S', )
-                if word.buffer[pos + 1] in ['S', 'Z']:
-                    next = next + (2, )
-                else:
-                    next = next + (1, )
-        elif character == 'T':
-            if word.buffer[pos:pos + 4] == 'TION':
-                next = ('X', 3)
-            elif word.buffer[pos:pos + 3] in ['TIA', 'TCH']:
-                next = ('X', 3)
-            elif word.buffer[pos:pos + 2] == 'TH' or word.buffer[pos:pos + 3] == 'TTH':
-                # special case 'thomas', 'thames' or germanic
-                if (word.buffer[pos + 2:pos + 4] in ['OM', 'AM']
-                    or word.buffer[word.start_index:word.start_index + 4] in ['VON ', 'VAN ']
-                    or word.buffer[word.start_index:word.start_index + 3] == 'SCH'):
-                    next = ('T', 2)
-                else:
-                    next = ('0', 'T', 2)
-            elif word.buffer[pos + 1] in ['T', 'D']:
-                next = ('T', 2)
-            else:
-                next = ('T', 1)
-        elif character == 'V':
-            if word.buffer[pos + 1] == 'V':
-                next = ('F', 2)
-            else:
-                next = ('F', 1)
-        elif character == 'W':
-            # can also be in middle of word
-            if word.buffer[pos:pos + 2] == 'WR':
-                next = ('R', 2)
-            elif (
-                pos == word.start_index
-                and (word.buffer[pos + 1] in VOWELS or word.buffer[pos:pos + 2] == 'WH')):
-                # Wasserman should match Vasserman
-                if word.buffer[pos + 1] in VOWELS:
-                    next = ('A', 'F', 1)
-                else:
-                    next = ('A', 1)
-            # Arnow should match Arnoff
-            elif ((pos == word.end_index and word.buffer[pos - 1] in VOWELS)
-                   or word.buffer[pos - 1:pos + 4] in ["EWSKI", "EWSKY", "OWSKI",
-                                                 "OWSKY"]
-                   or word.buffer[word.start_index:word.start_index + 3] == 'SCH'):
-                next = ('', 'F', 1)
-            # polish e.g. 'filipowicz'
-            elif word.buffer[pos:pos + 4] in ["WICZ", "WITZ"]:
-                next = ('TS', 'FX', 4)
-            else:  # default is to skip it
-                next = (None, 1)
-        elif character == 'X':
-            # french e.g. breaux
-            next = (None, )
-            if not(pos == word.end_index and (word.buffer[pos - 3:pos] in ["IAU", "EAU"]
-               or word.buffer[pos - 2:pos] in ['AU', 'OU'])):
-                next = ('KS', )
-            if word.buffer[pos + 1] in ['C', 'X']:
-                next = next + (2, )
-            else:
-                next = next + (1, )
-        elif character == 'Z':
-            # chinese pinyin e.g. 'zhao'
-            if word.buffer[pos + 1] == 'H':
-                next = ('J', )
-            elif (
-                word.buffer[pos + 1:pos + 3] in ["ZO", "ZI", "ZA"]
-                or (word.is_slavo_germanic
-                    and pos > word.start_index
-                    and word.buffer[pos - 1] != 'T')):
-                next = ('S', 'TS')
-            else:
-                next = ('S', )
-            if word.buffer[pos + 1] == 'Z' or word.buffer[pos + 1] == 'H':
-                next = next + (2, )
-            else:
-                next = next + (1, )
-        if len(next) == 2:
-            if next[0]:
-                pri += next[0]
-                sec += next[0]
-            pos += next[1]
-        elif len(next) == 3:
-            if next[0]:
-                pri += next[0]
-            if next[1]:
-                sec += next[1]
-            pos += next[2]
-    if pri == sec:
-        return (pri, '')
-    else:
-        return (pri, sec)
+    """
 
 
 # for backwards compatibility
