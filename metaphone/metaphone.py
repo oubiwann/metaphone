@@ -610,7 +610,7 @@ class DoubleMetaphone(object):
         self.word = Word(input)
         self.position = self.word.start_index
         self.check_word_start()
-        # main loop through chars in word.buffer
+        # loop through chars in word.buffer
         while self.position <= self.word.end_index:
             character = self.word.buffer[self.position]
             if character in VOWELS:
@@ -674,20 +674,21 @@ class DoubleMetaphone(object):
         return (self.primary_phone, self.secondary_phone)
 
 
+# backwards compatibility for the pre-OO implementation
 def doublemetaphone(input):
+    """
+    Given an input string, return a 2-tuple of the double metaphone codes for
+    the provided string. The second element of the tuple will be an empty
+    string if it is identical to the first element.
+    """
     return DoubleMetaphone().parse(input)
 
 
-# for backwards compatibility
+# for backwards compatibility for the old name of the function
 dm = doublemetaphone
 
 
 def XXX_doublemetaphone(input):
-    """
-    dm(string) -> (string, string or '') returns the double metaphone codes
-    for given string - always a tuple there are no checks done on the input
-    string, but it should be a single word or name.
-    """
     """
         # will never get here with st.encode('ascii', 'replace') above \xc7 is
         # UTF-8 encoding of Ç
