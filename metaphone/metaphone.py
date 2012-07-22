@@ -25,60 +25,29 @@ Slavic, Germanic, Celtic, Greek, French, Italian, Spanish, Chinese, and other
 origin. Thus it uses a much more complex ruleset for coding than its
 predecessor; for example, it tests for approximately 100 different contexts of
 the use of the letter C alone.
+
+This script implements the Double Metaphone algorithm (c) 1998, 1999 originally
+implemented by Lawrence Philips in C++. It was further modified in C++ by Kevin
+Atkinson (http://aspell.net/metaphone/). It was translated to C by Maurice
+Aubrey <maurice@hevanet.com> for use in a Perl extension. A Python version was
+created by Andrew Collins on January 12, 2007, using the C source
+(http://www.atomodo.com/code/double-metaphone/metaphone.py/view).
+ 
+  Updated 2007-02-14 - Found a typo in the 'gh' section (0.1.1)
+  Updated 2007-12-17 - Bugs fixed in 'S', 'Z', and 'J' sections (0.2;
+                       Chris Leong)
+  Updated 2009-03-05 - Various bug fixes against the reference C++
+                       implementation (0.3; Matthew Somerville)
+  Updated 2012-07    - Fixed long lines, added more docs, changed names,
+                       reformulated as objects, fixed a bug in 'G'
+                       (0.4; Duncan McGreggor)
 """
-# This script implements the Double Metaphone algorithm (c) 1998, 1999 by
-# Lawrence Philips it was translated to Python from the C source written by
-# Kevin Atkinson (http://aspell.net/metaphone/) By Andrew Collins - January 12,
-# 2007 who claims no rights to this work
-# http://www.atomodo.com/code/double-metaphone/metaphone.py/view
-# Updated 2007-02-14 - Found a typo in the 'gh' section (0.1.1)
-# Updated 2007-12-17 - Bugs fixed in 'S', 'Z', and 'J' sections (0.1.2;
-#                      Chris Leong)
-# Updated 2009-03-05 - Various bug fixes against the reference C++
-#                      implementation (0.2; Matthew Somerville)
-# XXX changes from 2010 haven't been integrated yet -- version 0.3
-# Updated 2012-07    - Fixed long lines, added more docs, changed names,
-#                      reformulated as objects, fixed a bug in 'G'
-#                      (0.4; Duncan McGreggor)
-import unicodedata
+from word import Word
 
 
 VOWELS = ['A', 'E', 'I', 'O', 'U', 'Y']
 SILENT_STARTERS = ["GN", "KN", "PN", "WR", "PS"]
 
-
-class Word(object):
-    """
-    """
-    def __init__(self, input):
-        self.original = input
-        self.decoded = input.decode('utf-8', 'ignore')
-        self.normalized = ''.join(
-            (c for c in unicodedata.normalize('NFD', self.decoded)
-            if unicodedata.category(c) != 'Mn'))
-        self.upper = self.normalized.upper()
-        self.length = len(self.upper)
-        self.prepad = "--"
-        self.start_index = len(self.prepad)
-        self.end_index = self.start_index + self.length - 1
-        self.postpad = "------"
-        # so we can index beyond the begining and end of the input string
-        self.buffer = self.prepad + self.upper + self.postpad
-
-    @property
-    def is_slavo_germanic(self):
-        return (
-            self.upper.find('W') > -1
-            or self.upper.find('K') > -1
-            or self.upper.find('CZ') > -1
-            or self.upper.find('WITZ') > -1)
-
-    def get_letters(self, start=0, end=None):
-        if not end:
-            end = start + 1
-        start = self.start_index + start
-        end = self.start_index + end
-        return self.buffer[start:end]
 
 class DoubleMetaphone(object):
     """
