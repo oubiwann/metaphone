@@ -1,4 +1,4 @@
-display_name = "Double Metaphone"
+display_name = "Double-Metaphone"
 library_name = "metaphone"
 version = "0.4"
 author = "Andrew Collins"
