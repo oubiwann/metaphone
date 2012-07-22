@@ -1,6 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Double Metaphone (c) 1998, 1999 by Lawrence Philips
 //
+// Slightly modified by Kevin Atkinson to fix several bugs and 
+// to allow it to give back more than 4 characters.
+//
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
@@ -93,6 +96,8 @@ bool MString::IsVowel(int at)
 bool MString::StringAt(int start, int length, ... )
 {
 
+        if (start < 0) return FALSE;
+
         char    buffer[64];
         char*   test;
         CString target;
@@ -148,7 +153,7 @@ void MString::DoubleMetaphone(CString &metaph, CString &metaph2)
         }
 
         ///////////main loop//////////////////////////
-        while((primary.GetLength() < 4) OR (secondary.GetLength() < 4))
+        while(TRUE OR (primary.GetLength() < 4) OR (secondary.GetLength() < 4))
         {
                 if(current >= length)
                         break;
@@ -236,7 +241,7 @@ void MString::DoubleMetaphone(CString &metaph, CString &metaph2)
                                         //germanic, greek, or otherwise 'ch' for 'kh' sound
                                         if((StringAt(0, 4, "VAN ", "VON ", "") OR StringAt(0, 3, "SCH", ""))
                                                 // 'architect but not 'arch', 'orchestra', 'orchid'
-                                                OR StringAt((current - 2), 6, "ORCHES", "ARCHIT", "ORCHID")
+                                                OR StringAt((current - 2), 6, "ORCHES", "ARCHIT", "ORCHID", "")
                                                         OR StringAt((current + 2), 1, "T", "S", "")
                                                                 OR ((StringAt((current - 1), 1, "A", "O", "U", "E", "") OR (current == 0))
                                                                         //e.g., 'wachtler', 'wechsler', but not 'tichner'
@@ -276,7 +281,7 @@ void MString::DoubleMetaphone(CString &metaph, CString &metaph2)
                                 //double 'C', but not if e.g. 'McClellan'
                                 if(StringAt(current, 2, "CC", "") AND !((current == 1) AND (GetAt(0) == 'M')))
                                         //'bellocchio' but not 'bacchus'
-                                        if(StringAt((current + 2), 1, "I", "E", "H") AND !StringAt((current + 2), 2, "HU", ""))
+                                        if(StringAt((current + 2), 1, "I", "E", "H", "") AND !StringAt((current + 2), 2, "HU", ""))
                                         {
                                                 //'accident', 'accede' 'succeed'
                                                 if(((current == 1) AND (GetAt(current - 1) == 'A')) 
@@ -491,7 +496,7 @@ void MString::DoubleMetaphone(CString &metaph, CString &metaph2)
 
                         case 'J':
                                 //obvious spanish, 'jose', 'san jacinto'
-                                if(StringAt(current, 4, "JOSE") OR StringAt(0, 4, "SAN ", "") )
+                                if(StringAt(current, 4, "JOSE", "") OR StringAt(0, 4, "SAN ", "") )
                                 {
                                         if(((current == 0) AND (GetAt(current + 4) == ' ')) OR StringAt(0, 4, "SAN ", "") )
                                                 MetaphAdd("H");
@@ -503,7 +508,7 @@ void MString::DoubleMetaphone(CString &metaph, CString &metaph2)
                                         break;
                                 }
 
-                                if((current == 0) AND !StringAt(current, 4, "JOSE"))
+                                if((current == 0) AND !StringAt(current, 4, "JOSE", ""))
                                         MetaphAdd("J", "A");//Yankelovich/Jankelowicz
                                 else
                                         //spanish pron. of e.g. 'bajador'
@@ -793,7 +798,7 @@ void MString::DoubleMetaphone(CString &metaph, CString &metaph2)
                                 }
 
                                 //polish e.g. 'filipowicz'
-                                if(StringAt(current, 4, "WICZ", "WITZ"))
+                                if(StringAt(current, 4, "WICZ", "WITZ", ""))
                                 {
                                         MetaphAdd("TS", "FX");
                                         current +=4;
@@ -846,13 +851,13 @@ void MString::DoubleMetaphone(CString &metaph, CString &metaph2)
 
         metaph  = primary;
         //only give back 4 char metaph
-        if(metaph.GetLength() > 4)
-                metaph.SetAt(4,'\0');
+        //if(metaph.GetLength() > 4)
+        //        metaph.SetAt(4,'\0');
         if(alternate)
         {
 	        metaph2 = secondary;
-                if(metaph2.GetLength() > 4)
-                        metaph2.SetAt(4,'\0');
+                //if(metaph2.GetLength() > 4)
+                //        metaph2.SetAt(4,'\0');
         }
 
 }
