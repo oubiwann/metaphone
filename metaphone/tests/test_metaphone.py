@@ -138,6 +138,9 @@ class MetaphoneTestCase(unittest.TestCase):
         self.assertEqual(
             doublemetaphone(u"katherine"),
             doublemetaphone(u"catherine"))
+        self.assertEqual(
+            doublemetaphone(u"brian"),
+            doublemetaphone(u"bryan"))
 
     def test_similar_names(self):
         result = doublemetaphone("Bartoš")
@@ -148,6 +151,13 @@ class MetaphoneTestCase(unittest.TestCase):
         self.assertEquals(result, ('PRTX', ''))
         result = doublemetaphone(u"Bartos")
         self.assertEquals(result, ('PRTS', ''))
+
+        result = set(doublemetaphone(u"Jablonski")).intersection(
+            doublemetaphone(u"Yablonsky"))
+        self.assertEquals(list(result), ['APLNSK'])
+        result = set(doublemetaphone(u"Smith")).intersection(
+            doublemetaphone(u"Schmidt"))
+        self.assertEquals(list(result), ['XMT'])
 
     def test_non_english_unicode(self):
         result = doublemetaphone("andestādītu")
