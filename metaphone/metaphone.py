@@ -32,7 +32,7 @@ Atkinson (http://aspell.net/metaphone/). It was translated to C by Maurice
 Aubrey <maurice@hevanet.com> for use in a Perl extension. A Python version was
 created by Andrew Collins on January 12, 2007, using the C source
 (http://www.atomodo.com/code/double-metaphone/metaphone.py/view).
- 
+
   Updated 2007-02-14 - Found a typo in the 'gh' section (0.1.1)
   Updated 2007-12-17 - Bugs fixed in 'S', 'Z', and 'J' sections (0.2;
                        Chris Leong)
@@ -184,13 +184,13 @@ class DoubleMetaphone(object):
                     and buffer[position + 1:position + 3] not in ["CE", "CI"]):
                     self.next = ('K', 2)
                 # default for 'C'
-                else: 
+                else:
                     self.next = ('K', 1)
 
     def process_d(self):
         if self.word.buffer[self.position:self.position + 2] == 'DG':
             # e.g. 'edge'
-            if self.word.buffer[self.position + 2] in ['I', 'E', 'Y']: 
+            if self.word.buffer[self.position + 2] in ['I', 'E', 'Y']:
                 self.next = ('J', 3)
             else:
                 self.next = ('TK', 2)
@@ -215,7 +215,7 @@ class DoubleMetaphone(object):
                 self.next = ('K', 2)
             elif position < (start_index + 3):
                 # 'ghislane', ghiradelli
-                if position == start_index: 
+                if position == start_index:
                     if buffer[position + 2] == 'I':
                         self.next = ('J', 2)
                     else:
@@ -319,7 +319,8 @@ class DoubleMetaphone(object):
             else:
                 self.next = ('J', 'H')
         # Yankelovich/Jankelowicz
-        elif position == start_index and buffer[self.position:self.position + 4] != 'JOSE':
+        elif (position == start_index
+              and buffer[self.position:self.position + 4] != 'JOSE'):
             self.next = ('J', 'A')
         else:
             # spanish pron. of e.g. 'bajador'
