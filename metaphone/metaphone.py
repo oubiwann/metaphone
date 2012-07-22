@@ -257,7 +257,7 @@ class DoubleMetaphone(object):
                 or (position > (start_index + 2)
                  and buffer[position - 3] in ['B', 'H', 'D'])
                 or (position > (start_index + 3)
-                 and buffer[position - 3] in ['B', 'H'])):
+                 and buffer[position - 4] in ['B', 'H'])):
                 self.next = (None, 2)
             else:
                 # e.g., 'laugh', 'McLaughlin', 'cough', 'gough', 'rough',
@@ -674,9 +674,11 @@ class DoubleMetaphone(object):
 
 
 def doublemetaphone(input):
-    if input == "Through":
-        import pdb;pdb.set_trace()
     return DoubleMetaphone().parse(input)
+
+
+# for backwards compatibility
+dm = doublemetaphone
 
 
 def XXX_doublemetaphone(input):
@@ -695,7 +697,3 @@ def XXX_doublemetaphone(input):
         elif character == u'\xd1':
             next = ('N', 1)
     """
-
-
-# for backwards compatibility
-dm = doublemetaphone
