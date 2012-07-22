@@ -56,12 +56,12 @@ class DoubleMetaphone(object):
         self.position = 0
         self.primary_phone = ""
         self.secondary_phone = ""
-        # next is set to a tuple of the next characters in the primary and
-        # secondary codes and how many characters to move forward in the
-        # string.  The secondary code letter is given only when it is different
-        # than the primary. This is just a trick to make the code easier to
-        # write and read. The default action is to add nothing and move to next
-        # char.
+        # next is used set to a tuple of the next characters in the primary and
+        # secondary codes and to indicate how many characters to move forward
+        # in the string.  The secondary code letter is given only when it is
+        # different than the primary. This is just a trick to make the code
+        # easier to write and read. The default action is to add nothing and
+        # move to next char.
         self.next = (None, 1)
 
     def check_word_start(self):

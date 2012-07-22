@@ -115,6 +115,14 @@ class MetaphoneTestCase(unittest.TestCase):
         result = doublemetaphone("andestādītu")
         self.assertEquals(result, ('ANTSTTT', ''))
 
+    def test_c_cedilla(self):
+        result = doublemetaphone("français")
+        self.assertEquals(result, ('FRNS', 'FRNSS'))
+        result = doublemetaphone("garçon")
+        self.assertEquals(result, ('KRSN', ''))
+        result = doublemetaphone("leçon")
+        self.assertEquals(result, ('LSN', ''))
+
     def test_various_german(self):
         result = doublemetaphone("ach")
         self.assertEquals(result, ("AX", "AK"))
