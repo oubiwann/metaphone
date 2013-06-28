@@ -99,9 +99,11 @@ a taste::
   $ python
   >>> from metaphone import doublemetaphone
   >>> doublemetaphone("architect")
-  ("ARKTKT", "")
+  (u"ARKTKT", u"")
   >>> doublemetaphone("bajador")
-  ("PJTR", "PHTR")
+  (u"PJTR", u"PHTR")
+  >>> doublemetaphone("Τι είναι το Unicode;")
+  (u'NKT', u'')
 
 In the Wild
 ===========
