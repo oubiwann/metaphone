@@ -83,7 +83,7 @@ such, its tests are runable by most test runners. If you have nose installed,
 you can do the following::
 
   $ git clone https://github.com/oubiwann/metaphone.git
-  $ cd double-metaphone
+  $ cd metaphone
   $ nosetests -v .
 
 If you have Twisted installed, you can do::
