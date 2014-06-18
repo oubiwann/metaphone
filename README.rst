@@ -79,7 +79,7 @@ Usage
 Running the Unit Tests
 ----------------------
 ``metaphone`` uses the ``unittest`` package from the standard library, and as
-such, its tests are runable by most test runners. If you have nose installed,
+such, its tests are runnable by most test runners. If you have `nose`_ installed,
 you can do the following::
 
   $ git clone https://github.com/oubiwann/metaphone.git
@@ -130,3 +130,4 @@ The following developers/projects make use of this library:
 .. _Duncan McGreggor: https://github.com/oubiwann/
 .. _quite well: http://theatricalia.com/search?q=chuck+iwugee
 .. _φarsk project: https://github.com/oubiwann/tharsk
+.. _nose: https://nose.readthedocs.org/
