@@ -82,7 +82,7 @@ Running the Unit Tests
 such, its tests are runable by most test runners. If you have nose installed,
 you can do the following::
 
-  $ git checkout https://github.com/oubiwann/metaphone.git
+  $ git clone https://github.com/oubiwann/metaphone.git
   $ cd double-metaphone
   $ nosetests -v .
 
