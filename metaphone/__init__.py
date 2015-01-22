@@ -1,1 +1,1 @@
-from metaphone import doublemetaphone, dm
+from .metaphone import doublemetaphone, dm
