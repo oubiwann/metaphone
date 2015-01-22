@@ -13,4 +13,6 @@ setup(
     license=meta.license,
     packages=find_packages(),
     long_description=open("README.rst").read(),
+    tests_require = ['nose'],
+    test_suite = 'nose.collector',
     )
