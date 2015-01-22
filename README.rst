@@ -79,11 +79,11 @@ Usage
 Running the Unit Tests
 ----------------------
 ``metaphone`` uses the ``unittest`` package from the standard library, and as
-such, its tests are runable by most test runners. If you have nose installed,
+such, its tests are runnable by most test runners. If you have `nose`_ installed,
 you can do the following::
 
-  $ git checkout https://github.com/oubiwann/metaphone.git
-  $ cd double-metaphone
+  $ git clone https://github.com/oubiwann/metaphone.git
+  $ cd metaphone
   $ nosetests -v .
 
 If you have Twisted installed, you can do::
@@ -99,9 +99,11 @@ a taste::
   $ python
   >>> from metaphone import doublemetaphone
   >>> doublemetaphone("architect")
-  ("ARKTKT", "")
+  (u"ARKTKT", u"")
   >>> doublemetaphone("bajador")
-  ("PJTR", "PHTR")
+  (u"PJTR", u"PHTR")
+  >>> doublemetaphone("Τι είναι το Unicode;")
+  (u'NKT', u'')
 
 In the Wild
 ===========
@@ -130,3 +132,4 @@ The following developers/projects make use of this library:
 .. _Duncan McGreggor: https://github.com/oubiwann/
 .. _quite well: http://theatricalia.com/search?q=chuck+iwugee
 .. _φarsk project: https://github.com/oubiwann/tharsk
+.. _nose: https://nose.readthedocs.org/
