@@ -10,6 +10,8 @@ Metaphone
 About
 =====
 
+**This is a fork of the Metaphone package, with added Unicode support.**
+
 Metaphone
 ---------
 As described on the `Wikipedia page`_, the original Metaphone algorithm was
@@ -72,6 +74,12 @@ include:
 * Sebastien Metrot
 
 * Duncan McGreggor
+
+* Ollie Bennett
+
+* Ian Beaver
+
+* Alastair Houghton
 
 Usage
 =====
