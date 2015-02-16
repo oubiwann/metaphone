@@ -44,7 +44,7 @@ created by Andrew Collins on January 12, 2007, using the C source
   Updated 2013-06    - Enforced unicode literals (0.5; Ian Beaver)
 """
 from __future__ import unicode_literals
-from word import Word
+from .word import Word
 
 
 VOWELS = ['A', 'E', 'I', 'O', 'U', 'Y']

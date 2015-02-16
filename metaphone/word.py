@@ -8,7 +8,7 @@ class Word(object):
     """
     def __init__(self, input):
         self.original = input
-        if type(input) == str:
+        if isinstance(input, bytes):
             self.decoded = input.decode('utf-8', 'ignore')
         else:
             self.decoded = input
