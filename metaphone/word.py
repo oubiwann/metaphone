@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import unicodedata
 
 
@@ -7,9 +8,12 @@ class Word(object):
     """
     def __init__(self, input):
         self.original = input
-        self.decoded = input.decode('utf-8', 'ignore')
-        self.decoded = self.decoded.replace(u'\xc7', "s")
-        self.decoded = self.decoded.replace(u'\xe7', "s")
+        if isinstance(input, bytes):
+            self.decoded = input.decode('utf-8', 'ignore')
+        else:
+            self.decoded = input
+        self.decoded = self.decoded.replace('\xc7', "s")
+        self.decoded = self.decoded.replace('\xe7', "s")
         self.normalized = ''.join(
             (c for c in unicodedata.normalize('NFD', self.decoded)
             if unicodedata.category(c) != 'Mn'))

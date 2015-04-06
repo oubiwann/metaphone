@@ -10,6 +10,8 @@ Metaphone
 About
 =====
 
+**This is a fork of the Metaphone package, with added Unicode support.**
+
 Metaphone
 ---------
 As described on the `Wikipedia page`_, the original Metaphone algorithm was
@@ -73,6 +75,12 @@ include:
 
 * Duncan McGreggor
 
+* Ollie Bennett
+
+* Ian Beaver
+
+* Alastair Houghton
+
 Usage
 =====
 
@@ -99,9 +107,11 @@ a taste::
   $ python
   >>> from metaphone import doublemetaphone
   >>> doublemetaphone("architect")
-  ("ARKTKT", "")
+  (u"ARKTKT", u"")
   >>> doublemetaphone("bajador")
-  ("PJTR", "PHTR")
+  (u"PJTR", u"PHTR")
+  >>> doublemetaphone("Τι είναι το Unicode;")
+  (u'NKT', u'')
 
 In the Wild
 ===========
