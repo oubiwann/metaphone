@@ -10,7 +10,7 @@ Metaphone
 About
 =====
 
-**This is a fork of the Metaphone package, with added Unicode support.**
+*A Python implementation of the Metaphone and Double Metaphone algorithms*
 
 Metaphone
 ---------
