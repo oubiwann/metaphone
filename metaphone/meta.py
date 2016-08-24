@@ -1,5 +1,5 @@
-display_name = "Metafone"
-library_name = "metafone"
+display_name = "Metaphone"
+library_name = "metaphone"
 version = "0.5"
 author = "Alastair Houghton"
 author_email = "alastair@alastairs-place.net"
