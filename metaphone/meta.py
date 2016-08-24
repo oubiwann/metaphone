@@ -1,6 +1,6 @@
 display_name = "Metaphone"
 library_name = "metaphone"
-version = "0.5"
+version = "0.6"
 author = "Andrew Collins"
 author_email = "AtomBoy@SWCP.com"
 license = "BSD"
