@@ -19,10 +19,10 @@ class Word(object):
             if unicodedata.category(c) != 'Mn'))
         self.upper = self.normalized.upper()
         self.length = len(self.upper)
-        self.prepad = "--"
+        self.prepad = "  "
         self.start_index = len(self.prepad)
         self.end_index = self.start_index + self.length - 1
-        self.postpad = "------"
+        self.postpad = "      "
         # so we can index beyond the begining and end of the input string
         self.buffer = self.prepad + self.upper + self.postpad
 
