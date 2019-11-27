@@ -126,7 +126,7 @@ class MetaphoneTestCase(unittest.TestCase):
 
     def test_various_german(self):
         result = doublemetaphone("ach")
-        self.assertEquals(result, ("AX", "AK"))
+        self.assertEquals(result, ("AK", ""))
         result = doublemetaphone("bacher")
         self.assertEquals(result, ("PKR", ""))
         result = doublemetaphone("macher")

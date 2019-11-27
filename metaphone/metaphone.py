@@ -132,7 +132,7 @@ class DoubleMetaphone(object):
                     (buffer[position - 1] in ["A", "O", "U", "E"]
                      or position == start_index)
                     and (buffer[position + 2] in [
-                        "L", "R", "N", "M", "B", "H", "F", "V", "W"]))):
+                        "L", "R", "N", "M", "B", "H", "F", "V", "W", " "]))):
                 self.next = ('K', 2)
             else:
                 if position > start_index:
