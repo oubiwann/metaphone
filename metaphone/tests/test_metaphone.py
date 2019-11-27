@@ -18,7 +18,7 @@ class MetaphoneTestCase(unittest.TestCase):
 
     def test_general_word_list(self):
         result = doublemetaphone('Jose')
-        self.assertEquals(result, ('JS', 'HS'))
+        self.assertEquals(result, ('HS', ''))
         result = doublemetaphone('cambrillo')
         self.assertEquals(result, ('KMPRL', 'KMPR'))
         result = doublemetaphone('otto')
@@ -162,7 +162,7 @@ class MetaphoneTestCase(unittest.TestCase):
 
     def test_various_french(self):
         result = doublemetaphone("rogier")
-        self.assertEquals(result, ("RJ", "RKR"))
+        self.assertEquals(result, ("RJ", "RJR"))
         result = doublemetaphone("breaux")
         self.assertEquals(result, ("PR", ""))
 

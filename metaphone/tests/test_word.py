@@ -14,7 +14,7 @@ class WordTestCase(unittest.TestCase):
         self.assertEqual(word.normalized, "stupendous")
         self.assertEqual(word.upper, "STUPENDOUS")
         self.assertEqual(word.length, 10)
-        self.assertEqual(word.buffer, "--STUPENDOUS------")
+        self.assertEqual(word.buffer, "  STUPENDOUS      ")
 
     def test_init_unicode(self):
         word = Word("Çç")
@@ -23,7 +23,7 @@ class WordTestCase(unittest.TestCase):
         self.assertEqual(word.normalized, u"ss")
         self.assertEqual(word.upper, u"SS")
         self.assertEqual(word.length, 2)
-        self.assertEqual(word.buffer, u"--SS------")
+        self.assertEqual(word.buffer, u"  SS      ")
 
         word = Word(u"Çç")
         self.assertEqual(word.original, u"\xc7\xe7")
@@ -31,7 +31,7 @@ class WordTestCase(unittest.TestCase):
         self.assertEqual(word.normalized, u"ss")
         self.assertEqual(word.upper, u"SS")
         self.assertEqual(word.length, 2)
-        self.assertEqual(word.buffer, u"--SS------")
+        self.assertEqual(word.buffer, u"  SS      ")
 
         word = Word("naïve")
         self.assertEqual(word.original, "na\xc3\xafve")
@@ -39,7 +39,7 @@ class WordTestCase(unittest.TestCase):
         self.assertEqual(word.normalized, "naive")
         self.assertEqual(word.upper, "NAIVE")
         self.assertEqual(word.length, 5)
-        self.assertEqual(word.buffer, "--NAIVE------")
+        self.assertEqual(word.buffer, "  NAIVE      ")
 
         word = Word(u"naïve")
         self.assertEqual(word.original, u"na\xefve")
@@ -47,7 +47,7 @@ class WordTestCase(unittest.TestCase):
         self.assertEqual(word.normalized, "naive")
         self.assertEqual(word.upper, "NAIVE")
         self.assertEqual(word.length, 5)
-        self.assertEqual(word.buffer, "--NAIVE------")
+        self.assertEqual(word.buffer, "  NAIVE      ")
 
     def test_is_slavo_germanic(self):
         word = Word("Berkowitz")
